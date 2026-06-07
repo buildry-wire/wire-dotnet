@@ -9,6 +9,9 @@
     <AssemblyName>Wirepayment</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Data-model properties are self-describing; don't require an XML doc
+         comment on every public member (CS1591) under warnings-as-errors. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
 
     <!-- NuGet package metadata -->
     <PackageId>Wirepayment</PackageId>
