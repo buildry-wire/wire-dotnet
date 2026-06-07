@@ -1,0 +1,23 @@
+# Build output
+bin/
+obj/
+artifacts/
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+coverage*.xml
+*.coverage
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+
+# OS
+.DS_Store
+
+# Packages
+*.nupkg
+*.snupkg

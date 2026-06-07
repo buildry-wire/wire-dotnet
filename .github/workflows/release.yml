@@ -1,0 +1,73 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  id-token: write   # NuGet OIDC Trusted Publishing
+  contents: write   # GitHub Release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Verify tag matches package version
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          TAG="${REF_NAME#v}"
+          VER=$(grep -oPm1 '(?<=<Version>)[^<]+' src/Wirepayment/Wirepayment.csproj)
+          echo "tag=$TAG package=$VER"
+          test "$TAG" = "$VER" || { echo "tag/version mismatch"; exit 1; }
+
+      - run: dotnet restore
+      - run: dotnet build --configuration Release --no-restore
+      - run: dotnet test --configuration Release --no-build
+      - run: dotnet pack src/Wirepayment/Wirepayment.csproj --configuration Release --no-build --output ./artifacts
+
+      # Preferred: NuGet.org Trusted Publishing via OIDC (no long-lived secret).
+      # Requires a Trusted Publisher policy configured on NuGet.org for this repo/workflow.
+      # See RELEASING.md. The login action exchanges the OIDC token for a short-lived API key.
+      - name: NuGet trusted publishing login (OIDC)
+        id: nuget_login
+        if: vars.NUGET_USER != ''
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Publish to NuGet (OIDC)
+        if: steps.nuget_login.outcome == 'success' && steps.nuget_login.outputs.NUGET_API_KEY != ''
+        env:
+          NUGET_API_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key "$NUGET_API_KEY" \
+            --skip-duplicate
+
+      # Fallback: long-lived API key secret. Used only when OIDC login did not run.
+      - name: Publish to NuGet (API key secret fallback)
+        if: steps.nuget_login.outcome != 'success'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "No OIDC trusted publisher and no NUGET_API_KEY secret set; cannot publish." >&2
+            exit 1
+          fi
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key "$NUGET_API_KEY" \
+            --skip-duplicate
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: ./artifacts/*.nupkg

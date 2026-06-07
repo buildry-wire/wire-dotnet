@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>Wire</RootNamespace>
+    <AssemblyName>Wirepayment</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- NuGet package metadata -->
+    <PackageId>Wirepayment</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Buildry</Authors>
+    <Company>Buildry</Company>
+    <Description>Official .NET server-side SDK for the Wire payment API. Create and confirm payment intents across Mongolian payment operators, list charges and events, manage webhook endpoints, and verify webhook signatures. Zero third-party dependencies.</Description>
+    <PackageTags>wire;payments;payment;api;sdk;webhooks</PackageTags>
+    <PackageProjectUrl>https://wire.mn</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/buildry-wire/wire-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
