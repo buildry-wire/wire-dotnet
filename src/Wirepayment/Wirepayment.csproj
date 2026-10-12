@@ -15,7 +15,7 @@
 
     <!-- NuGet package metadata -->
     <PackageId>Wirepayment</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Buildry</Authors>
     <Company>Buildry</Company>
     <Description>Official .NET server-side SDK for the Wire payment API. Create and confirm payment intents across Mongolian payment operators, list charges and events, manage webhook endpoints, and verify webhook signatures. Zero third-party dependencies.</Description>
