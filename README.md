@@ -15,12 +15,12 @@ using Wire;
 
 using var wire = new WireClient("sk_live_...");
 
-// Amounts are in minor units (integer).
+// Amounts are whole tögrög (MNT integer, no fractional part): 50000 = 50,000 ₮.
+// Without AllowedOperators, Wire routes to the operators enabled on your project.
 var pi = await wire.PaymentIntents.CreateAsync(new PaymentIntentCreateParams
 {
     Amount = 50000,
     Currency = "MNT",
-    AllowedOperators = new[] { "sandbox" }, // the operator ids enabled on your account
 });
 
 var confirmed = await wire.PaymentIntents.ConfirmAsync(pi.Id);
